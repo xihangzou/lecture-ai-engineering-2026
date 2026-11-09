@@ -5,6 +5,8 @@
 """
 
 import json
+import random
+from datetime import datetime
 from functools import cache
 from pathlib import Path
 
@@ -77,3 +79,42 @@ def get_lecture_summary(lecture: int) -> str:
         available = sorted(p.stem for p in (DATA_DIR / "lectures").glob("*.md"))
         return f"第{lecture}回の要点はまだありません。用意されている回: {', '.join(available)}"
     return path.read_text(encoding="utf-8")
+
+
+def make_quiz(lecture: int) -> str:
+    """指定した回の用語から1つを選び、確認問題とその答えを返す。lecture は1から数える。
+
+    復習用の問題を頼まれたときに使う。question を出題し、
+    answer は利用者が答えたあとか、答えを求められたときにだけ見せる。
+    """
+    terms = [e for e in load_glossary() if e["lecture"] == lecture]
+    if not terms:
+        available = sorted({e["lecture"] for e in load_glossary()})
+        return f"第{lecture}回の用語は用語集にありません。用語がある回: {', '.join(map(str, available))}"
+    entry = random.choice(terms)
+    return json.dumps(
+        {
+            "lecture": lecture,
+            "question": f"「{entry['term']}」とはどういう意味ですか？",
+            "answer": entry["definition"],
+        },
+        ensure_ascii=False,
+    )
+
+
+LOG_DIR = Path(__file__).resolve().parent.parent / "learning_log"
+
+
+def save_learning_log(title: str, content: str) -> str:
+    """学んだことを学習ログとして learning_log/ に Markdown で保存する。
+
+    利用者が記録を頼んだときだけ使う。title には短い見出し、content には本文を入れる。
+    保存の前に利用者の確認を取る。
+    """
+    if not title.strip() or not content.strip():
+        return "title と content の両方を指定してください。"
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    now = datetime.now()
+    path = LOG_DIR / f"{now:%Y%m%d-%H%M%S}.md"
+    path.write_text(f"# {title.strip()}\n\n{now:%Y-%m-%d %H:%M}\n\n{content.strip()}\n", encoding="utf-8")
+    return f"{path.relative_to(LOG_DIR.parent)} に保存しました。"
