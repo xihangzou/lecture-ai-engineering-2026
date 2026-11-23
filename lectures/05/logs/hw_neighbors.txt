@@ -1,0 +1,15 @@
+[model] gemini-3.5-flash-lite
+講義資料によると、LoRAやQLoRAでは以下のように学習・固定が行われます。
+
+* **何を固定するか**：元の重み（Pretrained Weights）は固定し、学習しません（第2回・PDF p.52）。
+* **何を学習するか**：小さな追加部分である、細長い2つの行列の積（低ランクの差分）である行列 $A$ と $B$ だけを学習します（第2回・PDF p.52）。
+* **QLoRAはどう拡張するか**：LoRAの手法に加えて、元の重みを**4bit（数値を粗く保存）に圧縮**することで、さらに少ないメモリ（GPU 1台など）での調整を可能にします（第2回・PDF p.51, 52）。
+
+これらを踏まえて、ご自身の課題や演習では「どのような目的のためにパラメータの一部（または量子化）を組み合わせているのか」という視点を整理してみてください。
+
+--- trace ---
+[tool call]   search_materials({'query': 'LoRA 凍結 学習 QLoRA'})
+[tool return] search_materials -> {"results": [{"page_id": "lec02-main-p052", "document_id": "lec02-main", "lecture": 2, "document_title": "基盤モデルの仕組み", "s…
+[time] 回答完了まで 3.17 秒（検索・埋め込みを含む）
+[usage] 入力 5,417 tokens / 出力 230 tokens / モデル応答 2 回
+[cost] 生成APIの推定コスト: $0.002200 USD（埋め込み・索引構築分は含まない）
