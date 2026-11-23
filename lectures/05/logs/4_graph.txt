@@ -1,0 +1,12 @@
+[model] gemini-3.5-flash-lite
+LoRA（Low-Rank Adaptation）では、**元のモデルの重み（本体）を固定**し、細長い2つの小さな行列（低ランクの差分行列、資料中の「A・B」）だけを学習します（第2回・PDF p.52）。これにより、全体の1%未満のパラメータを更新するだけで効率よくモデルを調整できます。
+
+また、**QLoRAは加えるか？** という点についてですが、QLoRAはLoRAの仕組みに加えて**「元の重みを4bitに圧縮して省メモリ化する」**手法です（第2回・PDF p.51, p.52）。
+大きなモデルの本体を4bitに量子化（圧縮）した上で、LoRAと同様に小さな追加部分（行列A・B）を学習するため、GPU 1台（Colabなどの限られた環境）でも数十億パラメータ級のモデルを調整できるようになります（第2回・PDF p.52）。
+
+--- trace ---
+[tool call]   search_graph({'query': 'LoRA QLoRA 学習'})
+[tool return] search_graph -> {"seeds": [{"page_id": "lec02-main-p052", "document_id": "lec02-main", "lecture": 2, "document_title": "基盤モデルの仕組み", "sec…
+[time] 回答完了まで 3.14 秒（検索・埋め込みを含む）
+[usage] 入力 5,762 tokens / 出力 231 tokens / モデル応答 2 回
+[cost] 生成APIの推定コスト: $0.002306 USD（埋め込み・索引構築分は含まない）

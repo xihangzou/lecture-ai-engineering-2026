@@ -45,4 +45,5 @@ def test_material_result_reaches_the_model(monkeypatch):
         result = agent.run_sync("RAGとは？")
     returns = _parts(result, ToolReturnPart)
     assert returns and returns[0].tool_name == "search_materials"
-    assert json.loads(returns[0].content)["results"] == [hit]
+    results = json.loads(returns[0].content)["results"]
+    assert hit in results  # 前後ページも付くので、ヒットが含まれることを確かめる
